@@ -70,11 +70,12 @@ class App extends React.Component {
                 }
 
                 // Combine the found virtual directories and files
-                Array.prototype.push.apply(res.segment.blobItems, res.segment.blobPrefixes);
+                // move folders to the top of the list
+                res.segment.blobItems = [...res.segment.blobPrefixes, ...res.segment.blobItems];
 
                 // This is to sort rows, and handles blobName, contentLength and lastModified time
                 const sortedData = _.orderBy(
-                    res.segment.blobItems.filter(bi => bi.name !== 'view/'),
+                    res.segment.blobItems.filter(bi => bi.name !== 'view/'), // the source of this viewer is in the 'view/' folder, so we exclude it
                     state.sorted.map(sort => {
                         return row => {
                             if (row[sort.id] === null) {
@@ -141,7 +142,7 @@ class App extends React.Component {
 
         return (
             <div>
-                <h1>Index of {prefix} </h1>
+                <Breadcrumbs path={prefix} />
 
                 <ReactTable
                     columns={[
@@ -188,6 +189,37 @@ class App extends React.Component {
                 />
             </div>
         );
+    }
+}
+
+class Breadcrumbs extends React.Component {
+    render() {
+        const pathSteps = (this.props.path || '').split('/').filter(a => a);
+
+        // add link to the root
+        const crumbs = [
+            <React.Fragment key="root">
+                <a href={window.location.origin}>root</a>
+                <span> / </span>
+            </React.Fragment>
+        ];
+
+        // create links for all breadcrumbs save the last one
+        if (pathSteps.length > 0) {
+            crumbs.push(
+                ...pathSteps.slice(0, -1).map((step, index) => (
+                    <React.Fragment key={step}>
+                        <a href={`${window.location.origin}?prefix=${pathSteps.slice(0, index + 1).join('/')}`}>{step}</a>
+                        <span> / </span>
+                    </React.Fragment>
+                ))
+            );
+
+            // add the last breadcrumb as a simple span
+            crumbs.push(<span>{pathSteps.slice(-1)}</span>);
+        }
+
+        return <h1>Index of {crumbs}</h1>;
     }
 }
 
