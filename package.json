@@ -5,6 +5,7 @@
     "homepage": "https://rampdemoblobstorage008.z9.web.core.windows.net/view",
     "dependencies": {
         "@azure/storage-blob": "^10.1.0-preview",
+        "moment": "^2.24.0",
         "namor": "^1.1.1",
         "react": "^16.6.0",
         "react-dom": "^16.6.0",
@@ -25,5 +26,8 @@
         "not dead",
         "not ie <= 11",
         "not op_mini all"
-    ]
+    ],
+    "devDependencies": {
+        "@types/moment": "^2.13.0"
+    }
 }

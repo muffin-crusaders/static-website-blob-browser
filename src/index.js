@@ -1,5 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
+import moment from 'moment';
 import _ from 'lodash';
 import './index.css';
 
@@ -155,9 +156,11 @@ class App extends React.Component {
                             id: 'lastModified',
                             accessor: d => {
                                 if (typeof d.properties !== 'undefined') {
-                                    return d.properties.lastModified.toISOString();
+                                    return moment(d.properties.lastModified.toISOString());
                                 }
                             },
+                            Cell: row =>
+                                row.value ? <span title={row.value.format('YYYY-MM-DD hh:mm:ss')}>{row.value.fromNow()}</span> : null,
                             maxWidth: 400
                         },
                         {
@@ -174,10 +177,13 @@ class App extends React.Component {
                     manual // Do not paginate as we can only list objects in pages from Blob storage
                     data={dataset}
                     pages={pages}
+                    minRows={0}
                     markers={markers}
                     loading={loading}
                     onFetchData={this.fetchData}
-                    defaultPageSize={10}
+                    pageSizeOptions={[5000]}
+                    defaultPageSize={5000}
+                    showPageSizeOptions={false}
                     className="-striped -highlight"
                 />
             </div>
