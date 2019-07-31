@@ -47,7 +47,7 @@ class App extends React.Component {
 
         // Fetch the prefix in the query params to browse into folders
         const urlParams = new URLSearchParams(window.location.search);
-        // const prefix = urlParams.get('prefix');
+        
         let prefix = window.location.pathname !== '/' ? window.location.pathname.slice(1) : urlParams.get('prefix');
         if (prefix !== null && prefix.length > 0 && prefix.slice(-1) !== '/') {
             prefix += '/';
@@ -182,6 +182,7 @@ class App extends React.Component {
                     markers={markers}
                     loading={loading}
                     onFetchData={this.fetchData}
+                    showPagination={pages !== 1}
                     pageSizeOptions={[5000]}
                     defaultPageSize={5000}
                     showPageSizeOptions={false}
@@ -216,7 +217,7 @@ class Breadcrumbs extends React.Component {
             );
 
             // add the last breadcrumb as a simple span
-            crumbs.push(<span>{pathSteps.slice(-1)}</span>);
+            crumbs.push(<span key="current">{pathSteps.slice(-1)}</span>);
         }
 
         return <h1>Index of {crumbs}</h1>;
